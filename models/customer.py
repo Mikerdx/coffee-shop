@@ -1,9 +1,9 @@
-class customer:
+class Customer:
     all = []
 
     def __init__(self, name):
         self.name = name
-        customer.all.append(self)
+        Customer.all.append(self)
 
     @property
     def name(self):
@@ -17,22 +17,23 @@ class customer:
             raise ValueError("Name must be a string between 1 and 15 characters.")
 
     def orders(self):
-        from models.order import order
-        return [o for o in order.all if o.customer == self]
+        from models.order import Order
+        return [order for order in Order.all if order.customer == self]
 
     def coffees(self):
-        from models.order import order
-        return list({o.coffee for o in self.orders()})
+        from models.order import Order
+        return list({order.coffee for order in self.orders()})
 
     def create_order(self, coffee, price):
-        from models.order import order
-        return order(self, coffee, price)
+        from models.order import Order
+        return Order(self, coffee, price)
 
     @classmethod
     def most_aficionado(cls, coffee):
-        from models.order import order  # ✅ Delayed import
+        from models.order import Order
         customer_spend = {}
-        for o in order.all:
-            if o.coffee == coffee:
-                customer_spend[o.customer] = customer_spend.get(o.customer, 0) + o.price
+        for order in Order.all:
+            if order.coffee == coffee:
+                customer_spend[order.customer] = customer_spend.get(order.customer, 0) + order.price
+        # Return customer who spent the most on the coffee or None if no orders
         return max(customer_spend, key=customer_spend.get, default=None)

@@ -1,14 +1,13 @@
+from models.coffee import Coffee
 
-from models.coffee import coffee
-
-class order:
+class Order:
     all = []
 
     def __init__(self, customer, coffee, price):
         self.customer = customer
         self.coffee = coffee
         self.price = price
-        order.all.append(self)
+        Order.all.append(self)
 
     @property
     def customer(self):
@@ -16,8 +15,8 @@ class order:
 
     @customer.setter
     def customer(self, value):
-        from models.customer import customer
-        if isinstance(value, customer):
+        from models.customer import Customer
+        if isinstance(value, Customer):
             self._customer = value
         else:
             raise TypeError("customer must be a Customer instance")
@@ -28,7 +27,7 @@ class order:
 
     @coffee.setter
     def coffee(self, value):
-        if isinstance(value, coffee):
+        if isinstance(value, Coffee):
             self._coffee = value
         else:
             raise TypeError("coffee must be a Coffee instance")

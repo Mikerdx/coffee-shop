@@ -1,33 +1,41 @@
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 
 import unittest
-from models.customer import customer
-from models.coffee import coffee
-from models.order import order
+from models.coffee import Coffee
+from models.customer import Customer
+from models.order import Order
 
 class TestCoffee(unittest.TestCase):
-
     def setUp(self):
-        customer.all.clear()
-        coffee.all.clear()
-        order.all.clear()
-        self.cust = customer("Anna")
-        self.coffee = coffee("Cappuccino")
+        Coffee.all.clear()
+        Customer.all.clear()
+        Order.all.clear()
+        self.coffee = Coffee("Espresso")
+        self.customer = Customer("Mike")
+        Order(self.customer, self.coffee, 5.0)
+        Order(self.customer, self.coffee, 3.0)
 
-    def test_coffee_created(self):
-        self.assertEqual(self.coffee.name, "Cappuccino")
+    def test_coffee_instance(self):
+        self.assertEqual(self.coffee.name, "Espresso")
+
+    def test_orders_method(self):
+        self.assertEqual(len(self.coffee.orders()), 2)
+
+    def test_customers_method(self):
+        self.assertEqual(self.coffee.customers(), [self.customer])
 
     def test_num_orders(self):
-        self.cust.create_order(self.coffee, 4.0)
-        self.cust.create_order(self.coffee, 6.0)
         self.assertEqual(self.coffee.num_orders(), 2)
 
     def test_average_price(self):
-        self.cust.create_order(self.coffee, 4.0)
-        self.cust.create_order(self.coffee, 6.0)
-        self.assertAlmostEqual(self.coffee.average_price(), 5.0)
+        self.assertEqual(self.coffee.average_price(), 4.0)
 
-if __name__ == '__main__':
+    def test_invalid_name_raises(self):
+        with self.assertRaises(ValueError):
+            Coffee("")
+
+if __name__ == "__main__":
     unittest.main()
